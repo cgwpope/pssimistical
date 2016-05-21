@@ -10,7 +10,9 @@
     "argparse": "^1.0.7",
     "async": "~0.2.8",
     "express": "~3.2.4",
-    "socket.io": "~0.9.14"
+    "socket.io": "~0.9.14",
+    "tslint": "^3.10.2",
+    "typescript": "^1.8.10"
   },
   "devDependencies": {
     "tsd": "^0.6.5"
