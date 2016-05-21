@@ -40,7 +40,9 @@
     "member-access": true,
     "member-ordering": [
       true,
-      { "order": "fields-first" }
+      "public-before-private",
+      "static-before-instance",
+      "variables-before-functions"
     ],
     "new-parens": true,
     "no-angle-bracket-type-assertion": true,
@@ -114,8 +116,7 @@
     ],
     "triple-equals": [
       true,
-      "allow-null-check",
-      "allow-undefined-check"
+      "allow-null-check"
     ],
     "typedef": [
       true,

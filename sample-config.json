@@ -2,7 +2,7 @@
     "tables": [{
         "columns": [{
             "name": "name",
-            "type": "Text/Integer/Float",
+            "type": "number",
             "index": true
         }],
 

@@ -25,7 +25,14 @@ arguments =
 Simple:
 - read config file
 - create DB tables from confg
-    = for each
+
+
+
+Supported Data Types
+
+number -> decimal
+text -> text
+date -> date
 
 
 
