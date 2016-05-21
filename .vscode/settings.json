@@ -3,9 +3,9 @@
         "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
-        "**/.DS_Store": true,
-        "**/*.js": true
-    },
+        "**/.DS_Store": true
+        
+    }
     
     
 }

@@ -2,15 +2,19 @@
     "tables": [{
         "columns": [{
             "name": "name",
-            "type": "number",
-            "index": true
-        }],
+            "type": "text"
+        },
+        {
+            "name": "id",
+            "type": "number"
+        }
+        ],
 
-        "name": "test"
+        "name": "patients"
     }],
     "inputs": [{
-        "path": "/var/log/messages",
-        "table": "syslog",
-        "reader": "pss_tx_log"
+        "path": "patients.csv.txt",
+        "table": "patients",
+        "reader": "pss_patients_export"
     }]
 }
