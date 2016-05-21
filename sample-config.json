@@ -1,0 +1,16 @@
+{
+    "tables": [{
+        "columns": [{
+            "name": "name",
+            "type": "Text/Integer/Float",
+            "index": true
+        }],
+
+        "name": "test"
+    }],
+    "inputs": [{
+        "path": "/var/log/messages",
+        "table": "syslog",
+        "reader": "pss_tx_log"
+    }]
+}
