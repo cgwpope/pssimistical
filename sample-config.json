@@ -16,5 +16,7 @@
         "path": "patients.csv.txt",
         "table": "patients",
         "reader": "pss_patients_export"
-    }]
+    }],
+    
+    "query": "SELECT count(*), name INTO CSV(\"output.csv\", {headers:true}) FROM patients group by name"
 }

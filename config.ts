@@ -1,7 +1,7 @@
 export interface IPssimisticalConfig {
     inputs: IPssimiscalInput[],
-    tables: IPssimisticalTable[]
-    
+    tables: IPssimisticalTable[],
+    query: string
     //TODO: reader
 }
 

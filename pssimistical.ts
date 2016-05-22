@@ -21,8 +21,7 @@ interface IPssimisticalReader {
     //ensure there is an intersection between read columns and target table columns
     getColumns(): string[];
 
-    read(filepath: string, rowRead: (row: any) => void);
-
+    read(filepath: string, rowRead: (row: any) => void, done: () => void);
 
 }
 
@@ -44,17 +43,24 @@ class PssPatientFileReader implements IPssimisticalReader {
             "Last_Billed_date"]
     }
 
-    read(filepath, rowRead: (row: any) => void) {
+    read(filepath, rowRead: (row: any) => void, done: () => void) {
         var parser = parse({ delimiter: ',' });
         var input = fs.createReadStream(filepath);
-        var transformer = transform( (record, callback) => {
+        var transformer = transform((record, callback) => {
             let transfromedRow = {};
-            for(let i = 0; i < this.getColumns().length; i++){
+            for (let i = 0; i < this.getColumns().length; i++) {
                 transfromedRow[this.getColumns()[i].toLowerCase()] = record[i];
             }
             rowRead(transfromedRow);
         }, { parallel: 10 }); //not ssure how well alasql will handle parallel inserts
         input.pipe(parser).pipe(transformer);
+
+
+        //TODO: handle async error
+
+        parser.on('finish', function () {
+            done();
+        });
     }
 }
 
@@ -378,18 +384,31 @@ if (fs.existsSync(args.config_file)) {
             reader.read(input.path, (row) => {
                 let sql: string = "INSERT INTO " + input.table + " ( " +
                     [...insertableColumns].reduce((columnList, columnName, index) => columnList + (index > 0 ? "," : "") + columnName, "")
-                + ") VALUES (" +
+                    + ") VALUES (" +
                     //TODO: Handle column type`
                     [...insertableColumns].reduce((columnList, columnName, index) => {
+                        let type: string; "";
+
                         return columnList + (index > 0 ? "," : "") + "'" + row[columnName] + "'";
-                    } , "")
-                + ")";
+                    }, "")
+                    + ")";
 
                 runSQL(sql);
+            }, () => {
+                //import is done. let's run a query!
+                if(config.query){
+                    runSQL(config.query);
+                } else {
+                    console.log("Done import, no query!");
+                }
             });
+
         } else {
             console.log("Invalid reader:" + input.reader + " - skipping");
         }
+
+        console.log("read");
+
 
     });
 
