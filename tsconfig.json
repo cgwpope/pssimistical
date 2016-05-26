@@ -1,13 +1,13 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "sourceMap": true,
-        "target": "es6"
+        "noImplicitAny": false,
+        "target": "es5",
+        "outDir": "bin"
     },
-    "files": [
-        "./pssimistical.ts",
-        "./config.ts",
-        "./typings/tsd.d.ts",
-        "./node_modules/alasql/dist/alasql.d.ts"
+    
+    "exclude" : [
+        "archive",
+        "node_modules",
+        "bin"
     ]
 }

@@ -13,7 +13,7 @@
         "name": "patients"
     }],
     "inputs": [{
-        "path": "patients.csv.txt",
+        "path": "data/patients.csv.txt",
         "table": "patients",
         "reader": "pss_patients_export"
     }],

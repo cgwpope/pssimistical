@@ -1,3 +1,5 @@
+
+export default `
 {
     "id": "TODO",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -80,3 +82,4 @@
         }
     }
 }
+`;
