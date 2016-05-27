@@ -1,7 +1,9 @@
-import {IPssimisticalTable, IPssimisticalColumn, IPssimisticalInput} from './IPssimisticalConfig'
+import {IPssimisticalTable, IPssimisticalColumn, IPssimisticalInput, IPssimisticalReader} from './IPssimisticalConfig'
 import {IPssimisticalConfigValidator} from './IPssimisticalConfigValidator'
 import {IPssimisticalConfig} from './IPssimisticalConfig';
 import {IPssimisticalConfigWrapper} from './IPssimisticalConfigWrapper';
+import {PssimisticalLoaderFactory} from '../input/PssimisticalLoaderFactory'
+
 
 import schema from './PssimisticalConfigSchema'
 
@@ -204,7 +206,7 @@ class DefaultPssmisiticalConfigValidator implements IPssimisticalConfigValidator
 
 
 
-    validateConfig(config: IPssimisticalConfig, onSchemaError: (validationResult) => void, onSemanticError: (message: string) => void) : IPssimisticalConfigWrapper {
+    validateConfig(config: IPssimisticalConfig, onSchemaError: (validationResult) => void, onSemanticError: (message: string) => void): IPssimisticalConfigWrapper {
 
         var v = new Validator();
         let validationResult = v.validate(config, JSON.parse(schema));
@@ -213,7 +215,6 @@ class DefaultPssmisiticalConfigValidator implements IPssimisticalConfigValidator
             return;
         } else {
             //TODO: More semantic checks:
-            //No duplicate tables
             //Input: table must be defined
 
             //TODO: move this check to json-schema, it is possible to implement there.
@@ -276,8 +277,36 @@ class DefaultPssmisiticalConfigValidator implements IPssimisticalConfigValidator
                     }
                 }
             });
-        
-        
+
+
+            //validate readers
+            //readers are valid in two ways. Either:
+            //reference a reader defined in the config file, or
+            //reference the name of a built-in reader
+            let violatingInputs: IPssimisticalInput[] = config.inputs.filter((input) => {
+                //find any inputs with readers that are not built-in or do not contain a definition in this config
+                return (
+                    PssimisticalLoaderFactory.readerNames.filter(readerName => readerName.toLowerCase() === input.reader.toLowerCase()).length > 0 ||
+                    !config.readers[input.reader]);
+            });
+            if (violatingInputs.length > 0) {
+                onSemanticError(
+                    violatingInputs.reduce(
+                        (message, input, index) => message + (index > 0 ? ", " : "") + input.reader,
+                        "The following readers referenced in inputs are undefined: ")
+                );
+                return;
+            }
+
+            for (let readerName in config.readers) {
+                if (PssimisticalLoaderFactory.readerTypes.filter(readerType => readerType.toLowerCase() === config.readers[readerName].type.toLowerCase()).length == 0) {
+                    onSemanticError(
+                        "Reader " + readerName + " refernces unfedined reader type " + config.readers[readerName].type);
+                    return;
+                }
+            }
+
+
             //TODO: check for input that references non-existant table
             //TODO: check for input that references non-existant reader
             return new DefaultPssimisticalConfigWrapper(config);
@@ -320,10 +349,10 @@ class DefaultPssimisticalConfigWrapper implements IPssimisticalConfigWrapper {
             return columns[0].type;
         }
     }
-    
-    getTableForName(tableName: string): IPssimisticalTable{
+
+    getTableForName(tableName: string): IPssimisticalTable {
         let tables: IPssimisticalTable[] = this._config.tables.filter(table => table.name.toLowerCase() === tableName.toLowerCase());
-        if(tables.length > 0){
+        if (tables.length > 0) {
             return tables[0];
         } else {
             //TODO: Error typing

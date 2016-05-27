@@ -1,22 +1,46 @@
 {
-    "tables": [{
-        "columns": [{
-            "name": "name",
-            "type": "text"
-        },
+    "tables": [
         {
-            "name": "id",
-            "type": "number"
+            "columns": [
+                {
+                    "name": "name",
+                    "type": "text"
+                },
+                {
+                    "name": "id",
+                    "type": "number"
+                }
+            ],
+            "name": "patients"
         }
-        ],
-
-        "name": "patients"
-    }],
-    "inputs": [{
-        "path": "data/patients.csv.txt",
-        "table": "patients",
-        "reader": "pss_patients_export"
-    }],
-    
+    ],
+    "readers": {
+        "pss_patients_export": {
+            "type": "CSV",
+            "linesToSkip": 2,
+            "columns": [
+                "name",
+                "Sex",
+                "Age",
+                "Birthdate",
+                "doctor_name",
+                "id",
+                "Health_Num",
+                "City",
+                "Address",
+                "Phone_Number",
+                "Status",
+                "Last_Billed_date",
+                "?"
+            ]
+        }
+    },
+    "inputs": [
+        {
+            "path": "data/patients.csv.txt",
+            "table": "patients",
+            "reader": "pss_patients_export"
+        }
+    ],
     "query": "SELECT count(*), name INTO CSV(\"output.csv\", {headers:true}) FROM patients group by name"
 }

@@ -1,13 +1,13 @@
-import {IPssimisticalFileInputFactory} from '../input/IPssimisticalFileInputFactory'
-import {IPssimisticalConfigValidator} from '../config/IPssimisticalConfigValidator'
-import {IPssimisticalConfig, IPssimisticalInput} from '../config/IPssimisticalConfig'
-import {IPssimisticalConfigWrapper} from '../config/IPssimisticalConfigWrapper'
-import {PssministicalConfigValidatorFactory} from '../config/PssmisticalConfigValidatorFactory'
-import {PssimisticalDataStoreFactory} from '../datastore/PssimisticalDataStoreFactory'
-import {IPssimisticalDataStore} from '../datastore/IPssimisticalDataStore'
-import {IPssimisticalFileInput} from '../input/IPssimisticalFileInput'
-import {IPssimisticalLoader} from '../input/IPssimisticalLoader'
-import {PssimisticalLoaderFactory} from '../input/PssimisticalLoaderFactory'
+import {IPssimisticalFileInputFactory} from './input/IPssimisticalFileInputFactory'
+import {IPssimisticalConfigValidator} from './config/IPssimisticalConfigValidator'
+import {IPssimisticalConfig, IPssimisticalInput} from './config/IPssimisticalConfig'
+import {IPssimisticalConfigWrapper} from './config/IPssimisticalConfigWrapper'
+import {PssministicalConfigValidatorFactory} from './config/PssmisticalConfigValidatorFactory'
+import {PssimisticalDataStoreFactory} from './datastore/PssimisticalDataStoreFactory'
+import {IPssimisticalDataStore} from './datastore/IPssimisticalDataStore'
+import {IPssimisticalFileInput} from './input/IPssimisticalFileInput'
+import {IPssimisticalLoader} from './input/IPssimisticalLoader'
+import {PssimisticalLoaderFactory} from './input/PssimisticalLoaderFactory'
 
 
 export class PssimisticalCore {
@@ -30,7 +30,7 @@ export class PssimisticalCore {
             let fileInput: IPssimisticalFileInput = this._fileInputFactory.buildInput(input);
 
             //have file input. no
-            let loader: IPssimisticalLoader = loaderFactory.builderLoader(input.reader, configWrapper.getTableForName(input.table));
+            let loader: IPssimisticalLoader = loaderFactory.builderLoader(configWrapper, input.reader, configWrapper.getTableForName(input.table));
             fileInput.read(loader, () => {
                 if(++numTablesComplete == configWrapper.getConfig().tables.length){
                     //run the queries

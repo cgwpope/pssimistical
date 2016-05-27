@@ -54,6 +54,33 @@ export default `
                 }
             }
         },
+        "readers": {
+            "type": "object",
+            "patternProperties": {
+                "\w+": {
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "columns"
+                    ],
+                    "properties": {
+                        "type": {
+                            "type": "string"
+                        },
+                        "linesToSkip": {
+                            "type": "number"
+                        },
+                        "columns": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "inputs": {
             "type": "array",
             "minItems": 1,

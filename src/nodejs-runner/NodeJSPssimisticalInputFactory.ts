@@ -1,13 +1,13 @@
-import {IPssimisticalConfigValidator} from '../config/IPssimisticalConfigValidator'
-import {IPssimisticalConfig, IPssimisticalInput} from '../config/IPssimisticalConfig'
-import {IPssimisticalConfigWrapper} from '../config/IPssimisticalConfigWrapper'
-import {PssministicalConfigValidatorFactory} from '../config/PssmisticalConfigValidatorFactory'
-import {PssimisticalDataStoreFactory} from '../datastore/PssimisticalDataStoreFactory'
-import {IPssimisticalDataStore} from '../datastore/IPssimisticalDataStore'
-import {IPssimisticalFileInputFactory} from '../input/IPssimisticalFileInputFactory'
-import {IPssimisticalFileInput} from '../input/IPssimisticalFileInput'
-import {IPssimisticalLoader} from '../input/IPssimisticalLoader'
-import {PssimisticalLoaderFactory} from '../input/PssimisticalLoaderFactory'
+import {IPssimisticalConfigValidator} from '../core/config/IPssimisticalConfigValidator'
+import {IPssimisticalConfig, IPssimisticalInput} from '../core/config/IPssimisticalConfig'
+import {IPssimisticalConfigWrapper} from '../core/config/IPssimisticalConfigWrapper'
+import {PssministicalConfigValidatorFactory} from '../core/config/PssmisticalConfigValidatorFactory'
+import {PssimisticalDataStoreFactory} from '../core/datastore/PssimisticalDataStoreFactory'
+import {IPssimisticalDataStore} from '../core/datastore/IPssimisticalDataStore'
+import {IPssimisticalFileInputFactory} from '../core/input/IPssimisticalFileInputFactory'
+import {IPssimisticalFileInput} from '../core/input/IPssimisticalFileInput'
+import {IPssimisticalLoader} from '../core/input/IPssimisticalLoader'
+import {PssimisticalLoaderFactory} from '../core/input/PssimisticalLoaderFactory'
 
 export class NodeJSPssimisticalInputFactory implements IPssimisticalFileInputFactory {
 
@@ -25,8 +25,6 @@ class FileReader implements IPssimisticalFileInput {
 
     }
 
-
-    //TODO: detect and handle EOF
     read(loader: IPssimisticalLoader, onCompleteCallback: () => void) { //throws InputCreationFailure  
         var lineReader = this._readline.createInterface({
             input: this._fs.createReadStream(this._filePath)
