@@ -30,8 +30,12 @@ export interface IPssimisticalColumn {
 
 export interface IPssimisticalReader {
     type: string,
-    linesToSkip: number,
+    readerProperties: IPssimisticalReaderProperties,
     columns: string[]
+}
+
+export interface IPssimisticalReaderProperties {
+    [key: string]: any;
 }
 
 

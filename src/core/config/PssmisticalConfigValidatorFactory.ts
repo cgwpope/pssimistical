@@ -301,13 +301,22 @@ class DefaultPssmisiticalConfigValidator implements IPssimisticalConfigValidator
             for (let readerName in config.readers) {
                 if (PssimisticalLoaderFactory.readerTypes.filter(readerType => readerType.toLowerCase() === config.readers[readerName].type.toLowerCase()).length == 0) {
                     onSemanticError(
-                        "Reader " + readerName + " refernces unfedined reader type " + config.readers[readerName].type);
+                        "Reader " + readerName + " refernces undefined reader type " + config.readers[readerName].type);
                     return;
                 }
             }
 
 
-            //TODO: check for input that references non-existant table
+            //check for input that references non-existant table
+            violatingInputs = config.inputs.filter((input) =>
+                config.tables.filter(table => table.name.toLowerCase() === input.table.toLowerCase()).length == 0
+            );
+            if (violatingInputs.length > 0) {
+                onSemanticError("Input references undefined table " + violatingInputs[0].table);
+                return;
+            }
+
+
             //TODO: check for input that references non-existant reader
             return new DefaultPssimisticalConfigWrapper(config);
         }

@@ -12,12 +12,27 @@
                 }
             ],
             "name": "patients"
+        },
+        {
+            "columns": [
+                {
+                    "name": "Patient_Number",
+                    "type": "number"
+                },
+                {
+                    "name": "Date_Overidden",
+                    "type": "text"
+                }
+            ],
+            "name": "security_override_log"
         }
     ],
     "readers": {
         "pss_patients_export": {
             "type": "CSV",
-            "linesToSkip": 2,
+            "readerProperties": {
+                "linesToSkip": 2
+            },
             "columns": [
                 "name",
                 "Sex",
@@ -33,6 +48,19 @@
                 "Last_Billed_date",
                 "?"
             ]
+        },
+        "security_override_log_export": {
+            "type": "txlog",
+            "readerProperties": {
+                "recordSeparator": "Security Override Log Entry"
+            },
+            "columns": [
+                "Patient Number",
+                "Overridden by user",
+                "Date Overidden",
+                "Overriders IPAddress",
+                "Override Type"
+            ]
         }
     },
     "inputs": [
@@ -40,6 +68,11 @@
             "path": "data/patients.csv.txt",
             "table": "patients",
             "reader": "pss_patients_export"
+        },
+        {
+            "path": "data/Transactions.txt",
+            "table": "security_override_log",
+            "reader": "security_override_log_export"
         }
     ],
     "query": "SELECT count(*), name INTO CSV(\"output.csv\", {headers:true}) FROM patients group by name"

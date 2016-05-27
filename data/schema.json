@@ -65,8 +65,8 @@
                         "type": {
                             "type": "string"
                         },
-                        "linesToSkip": {
-                            "type": "number"
+                        "readerProperties": {
+                            "type": "object"
                         },
                         "columns": {
                             "type": "array",

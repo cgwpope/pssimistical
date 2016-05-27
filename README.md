@@ -139,5 +139,6 @@ TODO
 - Propery type handling for number and date columns
 - Remove separate node.js io dependencies from core to permit running in browser
 - Use Promise to better track async execution
+- Verify reader column names against pattern in schema, but allow spaces
 
 
