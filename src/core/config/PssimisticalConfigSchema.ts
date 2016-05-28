@@ -67,8 +67,8 @@ export default `
                         "type": {
                             "type": "string"
                         },
-                        "linesToSkip": {
-                            "type": "number"
+                        "readerProperties": {
+                            "type": "object"
                         },
                         "columns": {
                             "type": "array",
@@ -105,7 +105,14 @@ export default `
             }
         },
         "query": {
-            "type": "string"
+            "type": "object",
+            "required": [
+                "sql"
+            ],
+            "properties": {
+                "sql": {"type": "string"},
+                "outputFile": {"type": "string"}
+            }
         }
     }
 }

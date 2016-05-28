@@ -75,16 +75,16 @@ outputs
 
 
     IPSSMisitcalDataStoreFactory
-    buildFromConfig(config): IPSSMisitcalDataStore
+        buildFromConfig(config): IPSSMisitcalDataStore
 
     IPSSMisitcalDataStore
-    init();
-    runQuery(); 
-    getTableTableStore(table): IPSSMisitcalTableDataStore  throws NoSuchTable
+        init();
+        runQuery(); 
+        getTableTableStore(table): IPSSMisitcalTableDataStore  throws NoSuchTable
 
 
     IPSSMisitcalTableDataStore
-    addRecord(record);
+        addRecord(record);
 
 
 
@@ -94,11 +94,12 @@ Input abstraction
 Abstraction of the creation of a reader required by a pssiitical config. The supporting environment (command line or browser) must provider the factory implementation to Pssimisitcal core.
 
     IPSSMisitcalInputFactory
-    buildPSSMisitcalInput(reader) : throws InputCreationFailure
+        buildPSSMisitcalInput(reader) : throws InputCreationFailure
 
 
     IPSSMisitcalInput
-    read( IPSSMisitcalLoader ) : throws InputCreationFailure //Syncronously read a file, with each line provided to callback
+        //Syncronously read a file, with each line provided to callback
+        read( IPSSMisitcalLoader ) : throws InputCreationFailure 
     
 
 
@@ -108,13 +109,15 @@ Loader
 Used to extract records from provided input and add to data store.
 
     IPSSMisitcalLoaderFactory (IPSSMisitcalDataStoreFactory)
-    builderLoader(reader) 
+        builderLoader(reader) 
 
 
     IPSSMisitcalLoader(IPSSMisitcalDataStore) 
-    readLine(line) //Syncronously process the line of a file
-    eof(); //Perform any handling on read completion    
-
+        //Syncronously process the line of a file
+        readLine(line) 
+        
+        //Perform any handling on read completion
+        eof();     
 
 
 Expected flow of Pssimitical's core
@@ -133,12 +136,17 @@ Expected flow of Pssimitical's core
 
 TODO
 ----
-- Support multiple input types for built-in formats
-- Support generic TSV input
+- Support multiple input types for built-in formats (CSV, TSV, Transaction log - what else?)
 - Support CSV output
 - Propery type handling for number and date columns
-- Remove separate node.js io dependencies from core to permit running in browser
-- Use Promise to better track async execution
+- Use Promise to better manage async execution.
+- Support progress-handling callbacks to visually show progress
 - Verify reader column names against pattern in schema, but allow spaces
+- Handle mapping column names for txlog-format as a reader property (eg. "patient #":"patient_id"
+    - Where should mapping occur? Reader or input?
+    - Probbaly reader. It implicitly occurs for TSV/CSV, based on ordering of columns.  
+- Move pre-defined readers to separate config read at runtime
+- Update documentation to list available readerProperties
+- Better abstraction/handling of error reporting
 
 

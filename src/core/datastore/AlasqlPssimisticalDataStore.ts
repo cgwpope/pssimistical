@@ -26,7 +26,7 @@ export class AlasqlPssimisticalDataStore implements IPssimisticalDataStore {
             let columnsDefinition = "(" + table.columns.reduce((value: string, column: IPssimisticalColumn, index: number) => {
                 return value + (index > 0 ? ", " : "") + column.name + " " + column.type + " ";
             }, "") + ")";
-            this.runSQL("CREATE TABLE " + table.name + " " + columnsDefinition)
+            this.runModify("CREATE TABLE " + table.name + " " + columnsDefinition)
 
 
             let columns: string[] = [];
@@ -37,7 +37,7 @@ export class AlasqlPssimisticalDataStore implements IPssimisticalDataStore {
                 return !!column.index;
             }).forEach((column: IPssimisticalColumn) => {
                 //create indexes for each index column
-                this.runSQL("CREATE INDEX ON " + table.name + " ( " + column.name + ")");
+                this.runModify("CREATE INDEX ON " + table.name + " ( " + column.name + ")");
             });
 
             tables[table.name.toLowerCase()] = columns;
@@ -45,15 +45,15 @@ export class AlasqlPssimisticalDataStore implements IPssimisticalDataStore {
 
     }
 
-    runSQL(sql: string) {
-        console.log("Running SQL: " + sql);
-        this._alasql(sql);
+    runQuery(sql: string): [string, any][] {
+        console.log("Running query: " + sql);
+        let results =  this._alasql(sql);
+        return results;
     }
 
-    runQuery(query: string) {
-
-        //TODO: Handle results
-        this.runSQL(query);
+    runModify(sql: string) {
+        console.log("Running query: " + sql);
+        this._alasql(sql);
     }
 
     getTableTableStore(table: IPssimisticalTable): IPssmisiticalTableDataStore {//  throws NoSuchTable
@@ -92,7 +92,7 @@ class AlasqlPssimisticalTableDataStore implements IPssmisiticalTableDataStore {
             + ")";
 
 
-        this._datastore.runSQL(sql);
+        this._datastore.runModify(sql);
 
     }
 }

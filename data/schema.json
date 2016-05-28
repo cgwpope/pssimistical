@@ -103,7 +103,16 @@
             }
         },
         "query": {
-            "type": "string"
+            "type": "object",
+            "required": [
+                "sql",
+                "outputFormat"
+            ],
+            "properties": {
+                "sql": {"type": "string"},
+                "outputFile": {"type": "string"},
+                "outputFormat": {"type": "string"}
+            }
         }
     }
 }

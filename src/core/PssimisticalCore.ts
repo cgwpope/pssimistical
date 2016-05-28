@@ -8,11 +8,13 @@ import {IPssimisticalDataStore} from './datastore/IPssimisticalDataStore'
 import {IPssimisticalFileInput} from './input/IPssimisticalFileInput'
 import {IPssimisticalLoader} from './input/IPssimisticalLoader'
 import {PssimisticalLoaderFactory} from './input/PssimisticalLoaderFactory'
-
+import {IPssimisticalOutputFactory} from './output/IPssimisticalOutputFactory'
+import {PssimisticalWriterFactory} from './output/PssimisticalWriterFactory'
+import {IPssimisticalWriter} from './output/IPssimisticalWriter'
 
 export class PssimisticalCore {
 
-    constructor(private _fileInputFactory: IPssimisticalFileInputFactory) {
+    constructor(private _fileInputFactory: IPssimisticalFileInputFactory, private _fileOutputFactory: IPssimisticalOutputFactory) {
 
     }
 
@@ -23,6 +25,7 @@ export class PssimisticalCore {
         let dataStore: IPssimisticalDataStore = new PssimisticalDataStoreFactory().buildFromConfig(configWrapper);
         dataStore.init();
         let loaderFactory: PssimisticalLoaderFactory = new PssimisticalLoaderFactory(dataStore);
+        let writerFactory: PssimisticalWriterFactory = new PssimisticalWriterFactory(this._fileOutputFactory);
 
 
         let numTablesComplete = 0;
@@ -32,9 +35,13 @@ export class PssimisticalCore {
             //have file input. no
             let loader: IPssimisticalLoader = loaderFactory.builderLoader(configWrapper, input.reader, configWrapper.getTableForName(input.table));
             fileInput.read(loader, () => {
-                if(++numTablesComplete == configWrapper.getConfig().tables.length){
+                if(++numTablesComplete == configWrapper.getConfig().inputs.length){
                     //run the queries
-                    dataStore.runQuery(configWrapper.getConfig().query);            
+                    var results = dataStore.runQuery(configWrapper.getConfig().query.sql);
+                    let writer: IPssimisticalWriter = writerFactory.buildWriter(configWrapper);
+                    for(let result of results){
+                        writer.writeRecord(result);
+                    }
                 }
             });
         });

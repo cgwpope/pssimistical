@@ -8,7 +8,10 @@ import {IPssimisticalFileInputFactory} from '../core/input/IPssimisticalFileInpu
 import {IPssimisticalFileInput} from '../core/input/IPssimisticalFileInput'
 import {IPssimisticalLoader} from '../core/input/IPssimisticalLoader'
 import {PssimisticalLoaderFactory} from '../core/input/PssimisticalLoaderFactory'
+
 import {NodeJSPssimisticalInputFactory} from './NodeJSPssimisticalInputFactory'
+import {NodeJSPssimisticalOutputFactory} from './NodeJSPssimisticalOutputFactory'
+
 import {PssimisticalCore} from '../core/PssimisticalCore'
 
 
@@ -49,7 +52,7 @@ export class PssimisticalNodeJSRunner {
             //TODO: Safely do this by reading into the buffer and setting a maximum size
             let config: IPssimisticalConfig = <IPssimisticalConfig>JSON.parse(this._fs.readFileSync(args.config_file, { encoding: 'utf8' }));
 
-            new PssimisticalCore(new NodeJSPssimisticalInputFactory(this._readline, this._fs)).run(config);
+            new PssimisticalCore(new NodeJSPssimisticalInputFactory(this._readline, this._fs), new NodeJSPssimisticalOutputFactory()).run(config);
             
         } else {
             console.log("Unable to read provided config file: " + args.config_file);

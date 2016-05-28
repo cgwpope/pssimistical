@@ -85,7 +85,7 @@
             "columns": [
                 "date",
                 "booking_date",
-                "Booking Time",
+                "booking_time",
                 "Patient #",
                 "Provider ID",
                 "Provider Name",
@@ -112,17 +112,12 @@
             "path": "data/patients.csv.txt",
             "table": "patients",
             "reader": "pss_patients_export"
-        },
-        {
-            "path": "data/Transactions.txt",
-            "table": "security_override_log",
-            "reader": "security_override_log_export"
-        },
-        {
-            "path": "data/appts.txt",
-            "table": "appointments",
-            "reader": "appointments"
         }
     ],
-    "query": "SELECT count(*), name INTO CSV(\"output.csv\", {headers:true}) FROM patients group by name"
+    
+    "query": {
+        "sql": "SELECT count(*), name FROM patients group by name",
+        "outputFormat": "CSV",
+        "outputFile": "out.csv"
+    }
 }

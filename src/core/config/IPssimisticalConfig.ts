@@ -1,7 +1,7 @@
 export interface IPssimisticalConfig {
     inputs: IPssimisticalInput[],
     tables: IPssimisticalTable[],
-    query: string,
+    query: IPssimisticalQuery,
     readers: IPssimiticalReaderHolder
 }
 
@@ -36,6 +36,12 @@ export interface IPssimisticalReader {
 
 export interface IPssimisticalReaderProperties {
     [key: string]: any;
+}
+
+export interface IPssimisticalQuery {
+    sql: string,
+    outputFile: string
+    outputFormat: string
 }
 
 
