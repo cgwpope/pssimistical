@@ -3,13 +3,13 @@ import {IPssmisiticalTableDataStore} from '../datastore/IPssmisiticalTableDataSt
 import {IPssimisticalLoader} from './IPssimisticalLoader';
 import {IPssimisticalTable, IPssimisticalReader} from '../config/IPssimisticalConfig';
 import {IPssimisticalConfigWrapper} from '../config/IPssimisticalConfigWrapper'
-import {PssimisticalCSVLoader} from './PssimisticalCSVLoader'
+import {PssimisticalSVLoader} from './PssimisticalSVLoader'
 import {PssimisticalTransactionLogLoader} from './PssimisticalTransactionLogLoader'
 
 export class PssimisticalLoaderFactory {
 
     public static readerTypes: string[] = [
-        "CSV",
+        "SV",
         "txlog"
     ]
 
@@ -36,9 +36,10 @@ export class PssimisticalLoaderFactory {
         } else {
             //create the appropriate reader based on type
             //only support CSV for now
-            if (readerConfig.type === "CSV") {
+            if (readerConfig.type === "SV") {
                 let linesToSkip: number = readerConfig.readerProperties['linesToSkip'] || 0;
-                return new PssimisticalCSVLoader(this._dataStore.getTableTableStore(table), readerConfig.columns, linesToSkip);
+                let delimiter: string = readerConfig.readerProperties['delimiter'] || ",";
+                return new PssimisticalSVLoader(this._dataStore.getTableTableStore(table), readerConfig.columns, linesToSkip, delimiter);
             } else if (readerConfig.type === "txlog") {
                 
                 let recordSeparator: string = readerConfig.readerProperties['recordSeparator'];

@@ -16,7 +16,7 @@
         {
             "columns": [
                 {
-                    "name": "Patient_Number",
+                    "name": "Date",
                     "type": "number"
                 },
                 {
@@ -25,13 +25,27 @@
                 }
             ],
             "name": "security_override_log"
+        },
+        {
+            "columns": [
+                {
+                    "name": "Date",
+                    "type": "text"
+                },
+                {
+                    "name": "Booking_Date",
+                    "type": "text"
+                }
+            ],
+            "name": "appointments"
         }
     ],
     "readers": {
         "pss_patients_export": {
-            "type": "CSV",
+            "type": "SV",
             "readerProperties": {
-                "linesToSkip": 2
+                "linesToSkip": 2,
+                "delimiter": ","
             },
             "columns": [
                 "name",
@@ -61,6 +75,36 @@
                 "Overriders IPAddress",
                 "Override Type"
             ]
+        },
+        "appointments": {
+            "type": "SV",
+            "readerProperties": {
+                "linesToSkip": 3,
+                "delimiter": "\t"
+            },
+            "columns": [
+                "date",
+                "booking_date",
+                "Booking Time",
+                "Patient #",
+                "Provider ID",
+                "Provider Name",
+                "Time",
+                "Duration",
+                "Details",
+                "Status",
+                "No Show",
+                "LWBS",
+                "Billed",
+                "Repeat",
+                "Deleted",
+                "ForeColour",
+                "BackColour",
+                "Booking Initials",
+                "Comments",
+                "Alert",
+                "Standby Priority"
+            ]
         }
     },
     "inputs": [
@@ -73,6 +117,11 @@
             "path": "data/Transactions.txt",
             "table": "security_override_log",
             "reader": "security_override_log_export"
+        },
+        {
+            "path": "data/appts.txt",
+            "table": "appointments",
+            "reader": "appointments"
         }
     ],
     "query": "SELECT count(*), name INTO CSV(\"output.csv\", {headers:true}) FROM patients group by name"
