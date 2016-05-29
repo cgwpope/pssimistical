@@ -10,6 +10,7 @@
     "argparse": "^1.0.7",
     "async": "~0.2.8",
     "csv": "^1.1.0",
+    "es6-promise": "^3.2.1",
     "express": "~3.2.4",
     "jsonschema": "^1.1.0",
     "socket.io": "~0.9.14",

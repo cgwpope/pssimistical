@@ -1,9 +1,9 @@
 import {IPssimisticalLoader} from './IPssimisticalLoader';
+import {Promise} from 'es6-promise';
 
 export interface IPssimisticalFileInput {
-    
-    /** - Syncronously read a file, with each line provided to callback */
-    read(loader: IPssimisticalLoader, callback: () => void ); //throws InputCreationFailure  
-     
+
+    //Promise resolves when file is completely read    
+    read(loader: IPssimisticalLoader): Promise<void>;  
 
 }

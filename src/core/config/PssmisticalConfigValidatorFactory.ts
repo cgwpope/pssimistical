@@ -3,6 +3,7 @@ import {IPssimisticalConfigValidator} from './IPssimisticalConfigValidator'
 import {IPssimisticalConfig} from './IPssimisticalConfig';
 import {IPssimisticalConfigWrapper} from './IPssimisticalConfigWrapper';
 import {PssimisticalLoaderFactory} from '../input/PssimisticalLoaderFactory'
+import {Promise} from 'es6-promise';
 
 
 import schema from './PssimisticalConfigSchema'
@@ -205,25 +206,21 @@ class DefaultPssmisiticalConfigValidator implements IPssimisticalConfigValidator
 
 
 
+    private validateAgainstSchema(config: IPssimisticalConfig): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            var v = new Validator();
+            let validationResult = v.validate(config, JSON.parse(schema));
+            if (!validationResult.valid) {
+                reject(new Error(validationResult));
+            }
+            resolve();
 
-    validateConfig(config: IPssimisticalConfig, onSchemaError: (validationResult) => void, onSemanticError: (message: string) => void): IPssimisticalConfigWrapper {
+        });
+    }
 
-        var v = new Validator();
-        let validationResult = v.validate(config, JSON.parse(schema));
-        if (!validationResult.valid) {
-            onSchemaError(validationResult);
-            return;
-        } else {
-            //TODO: More semantic checks:
-            //Input: table must be defined
-
-            //TODO: move this check to json-schema, it is possible to implement there.
-            ///verify no columsn or table names have key keywords as names
-
-
-
+    private validateTablesAndColumns(config: IPssimisticalConfig): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             config.tables.forEach((table) => {
-
                 //columns that have keywords
                 let violatingColumns: IPssimisticalColumn[] = table.columns.filter(
                     (column) => this.keywords.filter(
@@ -235,18 +232,21 @@ class DefaultPssmisiticalConfigValidator implements IPssimisticalConfigValidator
                     let message: string = violatingColumns.reduce(
                         (message, column, index) => message += (index == 0 ? "" : ", ") + column,
                         "The following columns of table " + table.name + " have invalid names (SQL keyword): ");
-                    onSemanticError(message);
-                    return;
+                    reject(new Error(message));
                 }
 
 
                 if (this.keywords.filter((keyword) => table.name.toLowerCase() === keyword).length > 0) {
-                    onSemanticError("Table " + table.name + " has invalid name (SQL keyword)");
-                    return;
+                    reject(new Error("Table " + table.name + " has invalid name (SQL keyword)"));
                 }
             });
 
+            resolve();
+        });
+    }
 
+    private validateNoDuplicateTableDefinitions(config: IPssimisticalConfig): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
 
             //verify no table name appears more than once
             let tableCounts = config.tables.reduce((counts, table) => {
@@ -256,13 +256,16 @@ class DefaultPssmisiticalConfigValidator implements IPssimisticalConfigValidator
 
             for (let key in tableCounts) {
                 if (tableCounts[key] > 1) {
-                    onSemanticError("Table " + key + " is defined more than once");
-                    return;
+                    reject(new Error("Table " + key + " is defined more than once"));
                 }
             }
+            
+            resolve();
+        });
+    }
 
-
-            //verify no table has a column defined more than once
+    private validateNoDuplicateColumnDefinitions(config: IPssimisticalConfig): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             config.tables.forEach(table => {
                 let columnCounts: any = table.columns.reduce((counts, column) => {
                     counts[column.name.toLowerCase()]++;
@@ -272,17 +275,17 @@ class DefaultPssmisiticalConfigValidator implements IPssimisticalConfigValidator
 
                 for (let key in columnCounts) {
                     if (columnCounts[key] > 1) {
-                        onSemanticError("Column " + key + " is defined more than one in table " + table.name);
-                        return;
+                        reject(new Error("Column " + key + " is defined more than one in table " + table.name));
                     }
                 }
             });
+            
+            resolve();
+        });
+    }
 
-
-            //validate readers
-            //readers are valid in two ways. Either:
-            //reference a reader defined in the config file, or
-            //reference the name of a built-in reader
+    private validateNoInputsWithUndefinedReaders(config: IPssimisticalConfig): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             let violatingInputs: IPssimisticalInput[] = config.inputs.filter((input) => {
                 //find any inputs with readers that are not built-in or do not contain a definition in this config
                 return (
@@ -290,38 +293,57 @@ class DefaultPssmisiticalConfigValidator implements IPssimisticalConfigValidator
                     !config.readers[input.reader]);
             });
             if (violatingInputs.length > 0) {
-                onSemanticError(
-                    violatingInputs.reduce(
-                        (message, input, index) => message + (index > 0 ? ", " : "") + input.reader,
-                        "The following readers referenced in inputs are undefined: ")
+                reject(new Error(
+                    violatingInputs.reduce((message, input, index) => message + (index > 0 ? ", " : "") + input.reader, "The following readers referenced in inputs are undefined: "))
                 );
-                return;
             }
+            
+            resolve();
+        });
+    }
 
-            for (let readerName in config.readers) {
-                if (PssimisticalLoaderFactory.readerTypes.filter(readerType => readerType.toLowerCase() === config.readers[readerName].type.toLowerCase()).length == 0) {
-                    onSemanticError(
-                        "Reader " + readerName + " refernces undefined reader type " + config.readers[readerName].type);
-                    return;
-                }
-            }
-
+    private validateNoInputsWithUndefinedTables(config: IPssimisticalConfig): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
 
             //check for input that references non-existant table
-            violatingInputs = config.inputs.filter((input) =>
+            let violatingInputs = config.inputs.filter((input) =>
                 config.tables.filter(table => table.name.toLowerCase() === input.table.toLowerCase()).length == 0
             );
             if (violatingInputs.length > 0) {
-                onSemanticError("Input references undefined table " + violatingInputs[0].table);
-                return;
+                reject(new Error("Input references undefined table " + violatingInputs[0].table));
+            } else {
+                resolve();
             }
-
-
-            //TODO: check for input that references non-existant reader
-            return new DefaultPssimisticalConfigWrapper(config);
-        }
-
+        });
     }
+
+
+    private validateNoReadersWithUnknownFormats(config: IPssimisticalConfig): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            for (let readerName in config.readers) {
+                if (PssimisticalLoaderFactory.readerTypes.filter(readerType => readerType.toLowerCase() === config.readers[readerName].type.toLowerCase()).length == 0) {
+                    reject(new Error("Reader " + readerName + " refernces undefined reader type " + config.readers[readerName].type));
+                }
+            }
+            
+            resolve();
+        });
+    }
+
+    validateConfig(config: IPssimisticalConfig): Promise<IPssimisticalConfigWrapper> {
+        return Promise.all([
+            this.validateAgainstSchema(config),
+            this.validateTablesAndColumns(config),
+            this.validateNoDuplicateTableDefinitions(config),
+            this.validateNoDuplicateColumnDefinitions(config),
+            this.validateNoInputsWithUndefinedReaders(config),
+            this.validateNoInputsWithUndefinedTables(config),
+            this.validateNoReadersWithUnknownFormats(config)
+        ]).then(() => {
+            return Promise.resolve(new DefaultPssimisticalConfigWrapper(config));
+        });
+    }
+
 }
 
 

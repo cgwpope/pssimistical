@@ -8,6 +8,8 @@ import {IPssimisticalFileInputFactory} from '../core/input/IPssimisticalFileInpu
 import {IPssimisticalFileInput} from '../core/input/IPssimisticalFileInput'
 import {IPssimisticalLoader} from '../core/input/IPssimisticalLoader'
 import {PssimisticalLoaderFactory} from '../core/input/PssimisticalLoaderFactory'
+import {Promise} from 'es6-promise';
+
 
 export class NodeJSPssimisticalInputFactory implements IPssimisticalFileInputFactory {
 
@@ -21,25 +23,28 @@ export class NodeJSPssimisticalInputFactory implements IPssimisticalFileInputFac
 }
 
 class FileReader implements IPssimisticalFileInput {
-    constructor(private _readline,  private _fs, private _filePath: string) {
+    constructor(private _readline, private _fs, private _filePath: string) {
 
     }
 
-    read(loader: IPssimisticalLoader, onCompleteCallback: () => void) { //throws InputCreationFailure  
-        var lineReader = this._readline.createInterface({
-            input: this._fs.createReadStream(this._filePath)
-        });
+    read(loader: IPssimisticalLoader): Promise<void> {
+        
+        return new Promise<void>((resolve, reject) => {
+            var lineReader = this._readline.createInterface({
+                input: this._fs.createReadStream(this._filePath)
+            });
 
-        lineReader.on('line', function (line) {
-            loader.onReadLine(line);
-        });
+            lineReader.on('line', function (line) {
+                loader.onReadLine(line);
+            });
 
-        lineReader.on('close', function () {
-            loader.onEOF();
-            
-            //TODO: This only works properly if loader.onEOF() is sync. 
-            //may need to make that async as well.
-            onCompleteCallback();
+            lineReader.on('close', function () {
+                
+                //TODO: loader.onEOF() -> Promise
+                loader.onEOF();
+                
+                resolve();
+            });
         });
     }
 

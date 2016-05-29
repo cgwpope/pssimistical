@@ -137,9 +137,7 @@ Expected flow of Pssimitical's core
 TODO
 ----
 - Support multiple input types for built-in formats (CSV, TSV, Transaction log - what else?)
-- Support CSV output
-- Propery type handling for number and date columns
-- Use Promise to better manage async execution.
+- Proper type handling for number and date columns - convert from text record input
 - Support progress-handling callbacks to visually show progress
 - Verify reader column names against pattern in schema, but allow spaces
 - Handle mapping column names for txlog-format as a reader property (eg. "patient #":"patient_id"
