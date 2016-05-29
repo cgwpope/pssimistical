@@ -19,7 +19,7 @@ import {PssimisticalCore} from '../core/PssimisticalCore'
 export class PssimisticalNodeJSRunner {
 
     private _parser;
-    
+
     constructor(private _argparse, private _fs, private _readline) {
         this.initArgumentParser();
     }
@@ -52,8 +52,15 @@ export class PssimisticalNodeJSRunner {
             //TODO: Safely do this by reading into the buffer and setting a maximum size
             let config: IPssimisticalConfig = <IPssimisticalConfig>JSON.parse(this._fs.readFileSync(args.config_file, { encoding: 'utf8' }));
 
-            new PssimisticalCore(new NodeJSPssimisticalInputFactory(this._readline, this._fs), new NodeJSPssimisticalOutputFactory()).run(config);
-            
+            new PssimisticalCore(new NodeJSPssimisticalInputFactory(this._readline, this._fs), new NodeJSPssimisticalOutputFactory())
+                .run(config)
+                .catch((error) => {
+                    console.log("Error");
+                    console.log(error);
+                    console.log(error.stack);
+                    process.exit(-1);
+                });
+
         } else {
             console.log("Unable to read provided config file: " + args.config_file);
         }

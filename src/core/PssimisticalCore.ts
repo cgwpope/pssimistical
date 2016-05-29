@@ -19,10 +19,10 @@ export class PssimisticalCore {
 
     }
 
-    public run(config: IPssimisticalConfig) {
+    public run(config: IPssimisticalConfig): Promise<void> {
         let validator: IPssimisticalConfigValidator = new PssministicalConfigValidatorFactory().buildConfigValidator();
 
-        validator.validateConfig(config).then((configWrapper) => {
+        return validator.validateConfig(config).then((configWrapper) => {
             //ok, valid config. return a promise that sets up data, loads it and runs queries
 
             return new PssimisticalDataStoreFactory().buildFromConfig(configWrapper).then((dataStore) => {
@@ -33,13 +33,13 @@ export class PssimisticalCore {
                     let loaderFactory: PssimisticalLoaderFactory = new PssimisticalLoaderFactory(dataStore);
                     let fileInput: IPssimisticalFileInput = this._fileInputFactory.buildInput(input);
 
-                    return  loaderFactory.builderLoader(configWrapper, input.reader, configWrapper.getTableForName(input.table))
-                            .then((loader: IPssimisticalLoader) => {
-                                return fileInput.read(loader);
-                            });
+                    return loaderFactory.builderLoader(configWrapper, input.reader, configWrapper.getTableForName(input.table))
+                        .then((loader: IPssimisticalLoader) => {
+                            return fileInput.read(loader);
+                        });
                 })).then(() => {
                     return dataStore.runQuery(configWrapper.getConfig().query.sql);
-                }).then((results) => {
+                }).then((results: [string, any][]) => {
                     let writerFactory: PssimisticalWriterFactory = new PssimisticalWriterFactory(this._fileOutputFactory);
                     let writer: IPssimisticalWriter = writerFactory.buildWriter(configWrapper);
                     for (let result of results) {
@@ -47,11 +47,6 @@ export class PssimisticalCore {
                     }
                 });
             });
-        }).catch((error) => {
-            console.log("Error");
-            console.log(error);
-            console.log(error.stack);
-            process.exit(-1);
         });
 
     }

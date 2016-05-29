@@ -145,6 +145,5 @@ TODO
     - Probbaly reader. It implicitly occurs for TSV/CSV, based on ordering of columns.  
 - Move pre-defined readers to separate config read at runtime
 - Update documentation to list available readerProperties
-- Better abstraction/handling of error reporting
 
 
