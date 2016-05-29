@@ -24,7 +24,6 @@ export class PssimisticalCore {
 
         return validator.validateConfig(config).then((configWrapper) => {
             //ok, valid config. return a promise that sets up data, loads it and runs queries
-
             return new PssimisticalDataStoreFactory().buildFromConfig(configWrapper).then((dataStore) => {
 
                 return Promise.all(configWrapper.getConfig().inputs.map((input: IPssimisticalInput) => {
@@ -33,7 +32,7 @@ export class PssimisticalCore {
                     let loaderFactory: PssimisticalLoaderFactory = new PssimisticalLoaderFactory(dataStore);
                     let fileInput: IPssimisticalFileInput = this._fileInputFactory.buildInput(input);
 
-                    return loaderFactory.builderLoader(configWrapper, input.reader, configWrapper.getTableForName(input.table))
+                    return loaderFactory.buildLoader(configWrapper, input.reader, configWrapper.getTableForName(input.table))
                         .then((loader: IPssimisticalLoader) => {
                             return fileInput.read(loader);
                         });
@@ -48,10 +47,5 @@ export class PssimisticalCore {
                 });
             });
         });
-
-    }
+    }   
 }
-
-
-
-

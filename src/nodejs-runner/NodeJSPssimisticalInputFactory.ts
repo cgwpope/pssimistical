@@ -28,7 +28,7 @@ class FileReader implements IPssimisticalFileInput {
     }
 
     read(loader: IPssimisticalLoader): Promise<void> {
-        
+
         return new Promise<void>((resolve, reject) => {
             var lineReader = this._readline.createInterface({
                 input: this._fs.createReadStream(this._filePath)
@@ -36,13 +36,12 @@ class FileReader implements IPssimisticalFileInput {
 
             lineReader.on('line', function (line) {
                 loader.onReadLine(line);
-            });
-
-            lineReader.on('close', function () {
-                
+            }).on('error', function (e) {
+                reject(e); 
+            }).on('close', function () {
                 //TODO: loader.onEOF() -> Promise
                 loader.onEOF();
-                
+
                 resolve();
             });
         });

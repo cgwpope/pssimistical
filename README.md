@@ -120,6 +120,10 @@ Used to extract records from provided input and add to data store.
         eof();     
 
 
+Loader has a type converter factory
+
+
+
 Expected flow of Pssimitical's core
 
     config = core.validateConfig()
@@ -145,5 +149,8 @@ TODO
     - Probbaly reader. It implicitly occurs for TSV/CSV, based on ordering of columns.  
 - Move pre-defined readers to separate config read at runtime
 - Update documentation to list available readerProperties
+- Support arbitrary moment.js date formats in Reader definition
+
+
 
 

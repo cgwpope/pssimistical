@@ -9,6 +9,10 @@
                 {
                     "name": "id",
                     "type": "number"
+                },
+                {
+                    "name": "birthdate",
+                    "type": "date"
                 }
             ],
             "name": "patients"
@@ -51,7 +55,7 @@
                 "name",
                 "Sex",
                 "Age",
-                "Birthdate",
+                "birthdate",
                 "doctor_name",
                 "id",
                 "Health_Num",
@@ -114,9 +118,8 @@
             "reader": "pss_patients_export"
         }
     ],
-    
     "query": {
-        "sql": "SELECT count(*), name FROM patients group by name",
+        "sql": "SELECT avg(id) from patients",
         "outputFormat": "CSV",
         "outputFile": "out.csv"
     }

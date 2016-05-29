@@ -13,6 +13,7 @@
     "es6-promise": "^3.2.1",
     "express": "~3.2.4",
     "jsonschema": "^1.1.0",
+    "moment": "^2.13.0",
     "socket.io": "~0.9.14",
     "tslint": "^3.10.2",
     "typescript": "^1.8.10"

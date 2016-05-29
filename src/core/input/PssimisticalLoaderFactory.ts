@@ -1,5 +1,5 @@
 import {IPssimisticalDataStore} from '../datastore/IPssimisticalDataStore';
-import {IPssmisiticalTableDataStore} from '../datastore/IPssmisiticalTableDataStore';
+import {IPssimisticalTableDataStore} from '../datastore/IPssimisticalTableDataStore';
 import {IPssimisticalLoader} from './IPssimisticalLoader';
 import {IPssimisticalTable, IPssimisticalReader} from '../config/IPssimisticalConfig';
 import {IPssimisticalConfigWrapper} from '../config/IPssimisticalConfigWrapper'
@@ -25,7 +25,7 @@ export class PssimisticalLoaderFactory {
 
     }
 
-    builderLoader(configWrapper: IPssimisticalConfigWrapper, reader: string, table: IPssimisticalTable): Promise<IPssimisticalLoader> {
+    buildLoader(configWrapper: IPssimisticalConfigWrapper, reader: string, table: IPssimisticalTable): Promise<IPssimisticalLoader> {
 
 
         return new Promise((resolve, reject) => {
@@ -60,9 +60,6 @@ export class PssimisticalLoaderFactory {
                 }
             }
         });
-
-        //TODO: handle different types;
-
     }
 
 }

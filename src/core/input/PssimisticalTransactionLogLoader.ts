@@ -1,11 +1,11 @@
 import {IPssimisticalLoader} from './IPssimisticalLoader'
-import {IPssmisiticalTableDataStore} from '../datastore/IPssmisiticalTableDataStore'
+import {IPssimisticalTableDataStore} from '../datastore/IPssimisticalTableDataStore'
 
 export class PssimisticalTransactionLogLoader implements IPssimisticalLoader {
     private _currentRecord;
     private _detailsAccumulator: string = "";
 
-    constructor(private _dataStore: IPssmisiticalTableDataStore, private _columns: string[], private _recordSeparator: string) {
+    constructor(private _dataStore: IPssimisticalTableDataStore, private _columns: string[], private _recordSeparator: string) {
 
     }
 

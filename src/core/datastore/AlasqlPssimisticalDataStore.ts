@@ -1,5 +1,5 @@
 import {IPssimisticalDataStore} from './IPssimisticalDataStore'
-import {IPssmisiticalTableDataStore} from './IPssmisiticalTableDataStore'
+import {IPssimisticalTableDataStore} from './IPssimisticalTableDataStore'
 import {IPssimisticalConfigWrapper} from '../config/IPssimisticalConfigWrapper'
 import {IPssimisticalTable, IPssimisticalColumn} from '../config/IPssimisticalConfig'
 import {Promise} from 'es6-promise';
@@ -67,14 +67,14 @@ export class AlasqlPssimisticalDataStore implements IPssimisticalDataStore {
         this._alasql(sql);
     }
 
-    getTableTableStore(table: IPssimisticalTable): IPssmisiticalTableDataStore {//  throws NoSuchTable
+    getTableTableStore(table: IPssimisticalTable): IPssimisticalTableDataStore {//  throws NoSuchTable
         return new AlasqlPssimisticalTableDataStore(this, table);
     }
 
 }
 
 
-class AlasqlPssimisticalTableDataStore implements IPssmisiticalTableDataStore {
+class AlasqlPssimisticalTableDataStore implements IPssimisticalTableDataStore {
 
     constructor(private _datastore: AlasqlPssimisticalDataStore, private _table: IPssimisticalTable) {
 

@@ -1,12 +1,12 @@
 import {IPssimisticalLoader} from './IPssimisticalLoader'
-import {IPssmisiticalTableDataStore} from '../datastore/IPssmisiticalTableDataStore'
+import {IPssimisticalTableDataStore} from '../datastore/IPssimisticalTableDataStore'
 
 export class PssimisticalSVLoader implements IPssimisticalLoader {
         private _parse;
     private _lineCount;
 
 
-    constructor(private _dataStore: IPssmisiticalTableDataStore, private _columns: string[], private _numLinesToSkip: number, private _delimiter) {
+    constructor(private _dataStore: IPssimisticalTableDataStore, private _columns: string[], private _numLinesToSkip: number, private _delimiter) {
         this._parse =  require('csv-parse/lib/sync');
         this._lineCount = 0;
     }
