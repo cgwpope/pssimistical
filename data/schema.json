@@ -68,6 +68,9 @@
                         "readerProperties": {
                             "type": "object"
                         },
+                        "columnMappings" : {
+                            "type": "object"
+                        },
                         "columns": {
                             "type": "array",
                             "minItems": 1,

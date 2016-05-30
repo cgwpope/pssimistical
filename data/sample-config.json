@@ -11,7 +11,7 @@
                     "type": "number"
                 },
                 {
-                    "name": "birthdate",
+                    "name": "birth_date",
                     "type": "date"
                 }
             ],
@@ -51,6 +51,9 @@
                 "linesToSkip": 2,
                 "delimiter": ","
             },
+            "columnMappings": {
+                "birthdate": "birth_date"
+            },
             "columns": [
                 "name",
                 "Sex",
@@ -84,7 +87,11 @@
             "type": "SV",
             "readerProperties": {
                 "linesToSkip": 3,
-                "delimiter": "\t"
+                "delimiter": "\t",
+                "columnMappings": {
+                    "column": "targetColumnName"
+                }
+
             },
             "columns": [
                 "date",
@@ -119,7 +126,7 @@
         }
     ],
     "query": {
-        "sql": "SELECT avg(id) from patients",
+        "sql": "SELECT birth_date from patients where birth_date is not null order by birth_date desc limit 1",
         "outputFormat": "CSV",
         "outputFile": "out.csv"
     }

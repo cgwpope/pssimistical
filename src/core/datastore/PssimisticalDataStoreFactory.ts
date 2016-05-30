@@ -18,9 +18,8 @@ export class PssimisticalDataStoreFactory {
 }
 
 
-//TODO: Figure out general implementation of delegate in Typescript...
-class DataStoreWrapper implements IPssimisticalDataStore {
-    constructor(private _dataStore: IPssimisticalDataStore, private _config: IPssimisticalConfigWrapper) {
+export class DelegatingDataStore implements IPssimisticalDataStore {
+    constructor(protected _dataStore: IPssimisticalDataStore) {
 
     }
 
@@ -30,6 +29,18 @@ class DataStoreWrapper implements IPssimisticalDataStore {
 
     runQuery(query: string): Promise<[string, any][]> {
         return this._dataStore.runQuery(query);
+    }
+
+    getTableTableStore(table: IPssimisticalTable): IPssimisticalTableDataStore {
+        return this._dataStore.getTableTableStore(table);
+    }
+} 
+
+
+//TODO: Figure out general implementation of delegate in Typescript...
+class DataStoreWrapper extends DelegatingDataStore implements IPssimisticalDataStore {
+    constructor(dataStore: IPssimisticalDataStore, private _config: IPssimisticalConfigWrapper) {
+        super(dataStore);
     }
 
     getTableTableStore(table: IPssimisticalTable): IPssimisticalTableDataStore {
@@ -69,12 +80,12 @@ class TypeConvertingTableDataStore implements IPssimisticalTableDataStore {
                     }
                 } else if (targetType === "date") {
                     //multiple date formats to consider.
-                    let date: Date = new DateParser().resolveToDate(record[key]).toDate();
-                    record[key] = date;
+                    var moment = new DateParser().resolveToDate(record[key]);
+                    record[key] = moment ? moment.toDate() : null;
                 }
             } catch (e) {
                 //log, but don't bail out:
-                console.log("Unable to determine target type for column: " + key);
+                //console.log("Unable to determine target type for column: " + key);
             }
         }
 

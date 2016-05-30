@@ -141,15 +141,11 @@ Expected flow of Pssimitical's core
 TODO
 ----
 - Support multiple input types for built-in formats (CSV, TSV, Transaction log - what else?)
-- Proper type handling for number and date columns - convert from text record input
 - Support progress-handling callbacks to visually show progress
-- Verify reader column names against pattern in schema, but allow spaces
-- Handle mapping column names for txlog-format as a reader property (eg. "patient #":"patient_id"
-    - Where should mapping occur? Reader or input?
-    - Probbaly reader. It implicitly occurs for TSV/CSV, based on ordering of columns.  
+- Support arbitrary moment.js date formats in Input definition (depends on table's destination column)
 - Move pre-defined readers to separate config read at runtime
 - Update documentation to list available readerProperties
-- Support arbitrary moment.js date formats in Reader definition
+
 
 
 

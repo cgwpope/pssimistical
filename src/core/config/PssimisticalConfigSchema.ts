@@ -70,6 +70,9 @@ export default `
                         "readerProperties": {
                             "type": "object"
                         },
+                        "columnMappings" : {
+                            "type": "object"
+                        },
                         "columns": {
                             "type": "array",
                             "minItems": 1,
@@ -107,11 +110,13 @@ export default `
         "query": {
             "type": "object",
             "required": [
-                "sql"
+                "sql",
+                "outputFormat"
             ],
             "properties": {
                 "sql": {"type": "string"},
-                "outputFile": {"type": "string"}
+                "outputFile": {"type": "string"},
+                "outputFormat": {"type": "string"}
             }
         }
     }

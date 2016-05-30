@@ -2,13 +2,15 @@ export interface IPssimisticalConfig {
     inputs: IPssimisticalInput[],
     tables: IPssimisticalTable[],
     query: IPssimisticalQuery,
-    readers: IPssimiticalReaderHolder
+    readers: TypedMap<IPssimisticalReader>
 }
 
 
-export interface IPssimiticalReaderHolder {
-    [name: string]: IPssimisticalReader;
+export interface TypedMap<T> {
+    [name: string]: T;
 }
+
+
 
 export interface IPssimisticalTable {
     columns: IPssimisticalColumn[],
@@ -30,11 +32,13 @@ export interface IPssimisticalColumn {
 
 export interface IPssimisticalReader {
     type: string,
-    readerProperties: IPssimisticalReaderProperties,
+    readerProperties: TypedMap<any>,
+    columnMappings:  TypedMap<string>,
     columns: string[]
 }
 
 export interface IPssimisticalReaderProperties {
+    
     [key: string]: any;
 }
 
