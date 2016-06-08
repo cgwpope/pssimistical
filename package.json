@@ -6,6 +6,13 @@
   "repository": "",
   "author": "TODO",
   "dependencies": {
+    "@angular/common": "^2.0.0-rc.1",
+    "@angular/compiler": "^2.0.0-rc.1",
+    "@angular/core": "^2.0.0-rc.1",
+    "@angular/http": "^2.0.0-rc.1",
+    "@angular/platform-browser": "^2.0.0-rc.1",
+    "@angular/platform-browser-dynamic": "^2.0.0-rc.1",
+    "@angular/router": "^2.0.0-rc.1",
     "alasql": "^0.2.6",
     "argparse": "^1.0.7",
     "async": "~0.2.8",
@@ -20,5 +27,24 @@
   },
   "devDependencies": {
     "typings": "^1.0.4"
+  },
+  "jspm": {
+    "dependencies": {
+      "@angular/common": "npm:@angular/common@^2.0.0-rc.1",
+      "@angular/compiler": "npm:@angular/compiler@^2.0.0-rc.1",
+      "@angular/core": "npm:@angular/core@^2.0.0-rc.1",
+      "@angular/http": "npm:@angular/http@^2.0.0-rc.1",
+      "@angular/platform-browser": "npm:@angular/platform-browser@^2.0.0-rc.1",
+      "@angular/platform-browser-dynamic": "npm:@angular/platform-browser-dynamic@^2.0.0-rc.1",
+      "@angular/router": "npm:@angular/router@^2.0.0-rc.1",
+      "async": "npm:async@^2.0.0-rc.6",
+      "csv": "npm:csv@^1.1.0",
+      "csv-parse": "npm:csv-parse@^1.1.1",
+      "jsonschema": "npm:jsonschema@^1.1.0",
+      "moment": "npm:moment@^2.13.0",
+      "ng2-material": "npm:ng2-material@^0.4.1",
+      "rxjs": "npm:rxjs@^5.0.0-beta.8"
+    },
+    "devDependencies": {}
   }
 }

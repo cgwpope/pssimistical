@@ -1,14 +1,12 @@
 import {IPssimisticalConfigValidator} from '../core/config/IPssimisticalConfigValidator'
 import {IPssimisticalConfig, IPssimisticalInput} from '../core/config/IPssimisticalConfig'
 import {IPssimisticalConfigWrapper} from '../core/config/IPssimisticalConfigWrapper'
-import {PssministicalConfigValidatorFactory} from '../core/config/PssmisticalConfigValidatorFactory'
 import {PssimisticalDataStoreFactory} from '../core/datastore/PssimisticalDataStoreFactory'
 import {IPssimisticalDataStore} from '../core/datastore/IPssimisticalDataStore'
 import {IPssimisticalFileInputFactory} from '../core/input/IPssimisticalFileInputFactory'
 import {IPssimisticalFileInput} from '../core/input/IPssimisticalFileInput'
 import {IPssimisticalLoader} from '../core/input/IPssimisticalLoader'
 import {PssimisticalLoaderFactory} from '../core/input/PssimisticalLoaderFactory'
-import {Promise} from 'es6-promise';
 
 
 export class NodeJSPssimisticalInputFactory implements IPssimisticalFileInputFactory {

@@ -1,7 +1,7 @@
 import {IPssimisticalConfigValidator} from '../core/config/IPssimisticalConfigValidator'
 import {IPssimisticalConfig, IPssimisticalInput} from '../core/config/IPssimisticalConfig'
 import {IPssimisticalConfigWrapper} from '../core/config/IPssimisticalConfigWrapper'
-import {PssministicalConfigValidatorFactory} from '../core/config/PssmisticalConfigValidatorFactory'
+import {PssimisticalConfigValidatorFactory} from '../core/config/PssimisticalConfigValidatorFactory'
 import {PssimisticalDataStoreFactory} from '../core/datastore/PssimisticalDataStoreFactory'
 import {IPssimisticalDataStore} from '../core/datastore/IPssimisticalDataStore'
 import {IPssimisticalFileInputFactory} from '../core/input/IPssimisticalFileInputFactory'

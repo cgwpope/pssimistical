@@ -3,7 +3,6 @@ import {IPssimisticalTable} from '../config/IPssimisticalConfig'
 import {IPssimisticalDataStore} from './IPssimisticalDataStore';
 import {IPssimisticalTableDataStore} from './IPssimisticalTableDataStore';
 import {AlasqlPssimisticalDataStore} from './AlasqlPssimisticalDataStore';
-import {Promise} from 'es6-promise';
 
 export class PssimisticalDataStoreFactory {
     buildFromConfig(config: IPssimisticalConfigWrapper): Promise<IPssimisticalDataStore> {

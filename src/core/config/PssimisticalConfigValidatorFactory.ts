@@ -3,7 +3,6 @@ import {IPssimisticalConfigValidator} from './IPssimisticalConfigValidator'
 import {IPssimisticalConfig} from './IPssimisticalConfig';
 import {IPssimisticalConfigWrapper} from './IPssimisticalConfigWrapper';
 import {PssimisticalLoaderFactory} from '../input/PssimisticalLoaderFactory'
-import {Promise} from 'es6-promise';
 
 
 import schema from './PssimisticalConfigSchema'
@@ -11,7 +10,7 @@ import schema from './PssimisticalConfigSchema'
 var Validator = require('jsonschema').Validator;
 
 
-export class PssministicalConfigValidatorFactory {
+export class PssimisticalConfigValidatorFactory {
     buildConfigValidator(): IPssimisticalConfigValidator {
         return new DefaultPssmisiticalConfigValidator();
     }

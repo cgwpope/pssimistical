@@ -6,7 +6,6 @@ import {IPssimisticalConfigWrapper} from '../config/IPssimisticalConfigWrapper'
 import {PssimisticalSVLoader} from './PssimisticalSVLoader'
 import {PssimisticalTransactionLogLoader} from './PssimisticalTransactionLogLoader'
 import {DelegatingDataStore} from '../datastore/PssimisticalDataStoreFactory'
-import {Promise} from 'es6-promise';
 
 
 export class PssimisticalLoaderFactory {

@@ -140,13 +140,41 @@ Expected flow of Pssimitical's core
 
 TODO
 ----
-- Support multiple input types for built-in formats (CSV, TSV, Transaction log - what else?)
-- Support progress-handling callbacks to visually show progress
-- Support arbitrary moment.js date formats in Input definition (depends on table's destination column)
+- Support
+    - Flowsheet export Tab-separated-values (ensure proper handling of long inputs)
+    - PSS XML Patient Record (or extract of...) - XSLT to extract -> import?
+
 - Move pre-defined readers to separate config read at runtime
+    -> Gulp to monitor and build
+    -> Include step to copy JSON to known location
+    -> Fetch with runtime-specific method
+    
 - Update documentation to list available readerProperties
+- Support progress-handling callbacks to report progress
+- Support arbitrary moment.js date formats in Input definition (depends on table's destination column)
+- Separate PSSimistitical core, web, nodejs intto separate NPM projects
+- Switch to JSPM so dependencies from npm are automaticall loaded
+
+PSSimistial-Core
+|
+ --> PSSimistial-Node
+|
+ --> PSSimistial-Web
 
 
+PSSimistical-web
+----------------
 
+Operations
 
+1. Configuration Selection (route:  /select-config)
+    0. Pull config from github
+    1. Select Config
+    2. Validate config
+2. Collect input files (route: /collect-input) 
+    1. For each input provide file selection
+4. Run report (route: /report-runner)
+    1. One window for report run output
+5. Display output (route: /report-runner)
+    1. For each output, create a data table to show results and allow CVS download 
 

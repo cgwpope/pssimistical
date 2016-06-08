@@ -8,6 +8,7 @@ export class PssimisticalSVLoader implements IPssimisticalLoader {
 
     constructor(private _dataStore: IPssimisticalTableDataStore, private _columns: string[], private _numLinesToSkip: number, private _delimiter) {
         this._parse =  require('csv-parse/lib/sync');
+        // this._parse =  require('csv-parse');
         this._lineCount = 0;
     }
 

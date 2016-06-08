@@ -2,7 +2,7 @@ import {IPssimisticalFileInputFactory} from './input/IPssimisticalFileInputFacto
 import {IPssimisticalConfigValidator} from './config/IPssimisticalConfigValidator'
 import {IPssimisticalConfig, IPssimisticalInput} from './config/IPssimisticalConfig'
 import {IPssimisticalConfigWrapper} from './config/IPssimisticalConfigWrapper'
-import {PssministicalConfigValidatorFactory} from './config/PssmisticalConfigValidatorFactory'
+import {PssimisticalConfigValidatorFactory} from './config/PssimisticalConfigValidatorFactory'
 import {PssimisticalDataStoreFactory} from './datastore/PssimisticalDataStoreFactory'
 import {IPssimisticalDataStore} from './datastore/IPssimisticalDataStore'
 import {IPssimisticalFileInput} from './input/IPssimisticalFileInput'
@@ -11,7 +11,7 @@ import {PssimisticalLoaderFactory} from './input/PssimisticalLoaderFactory'
 import {IPssimisticalOutputFactory} from './output/IPssimisticalOutputFactory'
 import {PssimisticalWriterFactory} from './output/PssimisticalWriterFactory'
 import {IPssimisticalWriter} from './output/IPssimisticalWriter'
-import {Promise} from 'es6-promise';
+
 
 export class PssimisticalCore {
 
@@ -20,7 +20,7 @@ export class PssimisticalCore {
     }
 
     public run(config: IPssimisticalConfig): Promise<void> {
-        let validator: IPssimisticalConfigValidator = new PssministicalConfigValidatorFactory().buildConfigValidator();
+        let validator: IPssimisticalConfigValidator = new PssimisticalConfigValidatorFactory().buildConfigValidator();
 
         return validator.validateConfig(config).then((configWrapper) => {
             //ok, valid config. return a promise that sets up data, loads it and runs queries

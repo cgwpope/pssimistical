@@ -2,7 +2,6 @@ import {IPssimisticalDataStore} from './IPssimisticalDataStore'
 import {IPssimisticalTableDataStore} from './IPssimisticalTableDataStore'
 import {IPssimisticalConfigWrapper} from '../config/IPssimisticalConfigWrapper'
 import {IPssimisticalTable, IPssimisticalColumn} from '../config/IPssimisticalConfig'
-import {Promise} from 'es6-promise';
 
 
 
