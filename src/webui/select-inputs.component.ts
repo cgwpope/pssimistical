@@ -11,17 +11,12 @@ import { MD_TABS_DIRECTIVES } from '@angular2-material/tabs';
     template:
     `
     <div>
-    Select inputs
-    
     <md-tab-group class="demo-tab-group">
         <md-tab *ngFor="let input of config.inputs">
             <template md-tab-label>{{input.path}}</template>
             <template md-tab-content>
                 <div id="drop_zone" (dragover)="handleDraggedOver($event)" (drop)="handleDrop($event, input.path)">
                     Drop files here
-                    <br>
-                    <br>
-                    <br>
                 </div>
             </template>
         </md-tab>

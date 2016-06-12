@@ -126,7 +126,7 @@
         }
     ],
     "query": {
-        "sql": "SELECT birth_date from patients where birth_date is not null order by birth_date desc limit 1",
+        "sql": "SELECT * from patients, patients",
         "outputFormat": "CSV",
         "outputFile": "out.csv"
     }

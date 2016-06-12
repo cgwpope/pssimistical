@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
 import {IPssimisticalConfig} from '../core/config/IPssimisticalConfig'
 import {PssimisticalConfigValidatorFactory} from '../core/config/PssimisticalConfigValidatorFactory'
 import {IPssimisticalConfigValidator} from '../core/config/IPssimisticalConfigValidator'
@@ -10,12 +10,34 @@ import {IPssimisticalConfigWrapper} from '../core/config/IPssimisticalConfigWrap
     template:
     `
     <div>
-    Select a config
     
-    <div id="drop_zone" (dragover)="handleDraggedOver($event)" (drop)="handleDrop($event)">Drop files here</div>
+    <h3>Drag a Pssimistical configuration file onto the dropzone.</h3>
+    
+    <div class="dropzone" (dragover)="handleDraggedOver($event)" (drop)="handleDrop($event)">
+        <h3>Drop configuration file here</h3>
+    </div>
     
     </div>
-    `
+    `,
+    styles: [
+        `
+        .dropzone {
+            text-align: center;
+            height: 200px;
+            border-color: black;
+            border-style: solid;
+            border-width: 2px;
+            transition: background-color 0.5s, ease-in;
+        }
+
+        .dropzone:hover {
+            background-color: cornflowerblue;
+        }
+
+
+`
+    ],
+    encapsulation: ViewEncapsulation.Native
 })
 export class SelectConfigComponent {
 

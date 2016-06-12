@@ -1,22 +1,19 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import {MATERIAL_DIRECTIVES} from 'ng2-material';
+
+import {MdToolbar} from '@angular2-material/toolbar';
+import {MdButton} from '@angular2-material/button';
+import {MD_CARD_DIRECTIVES} from '@angular2-material/card';
+
+
+
 import {SelectConfigComponent} from './select-config.component'
 import {SelectInputsComponent, InputSelctedEvent} from './select-inputs.component'
+import {PssimisticalReportRunnerComponent} from './report-runner.component'
 import {IPssimisticalWebUIModel} from './IPssimisticalWebUIModel'
+
 import {IPssimisticalInput} from '../core/config/IPssimisticalConfig'
 import {IPssimisticalConfigWrapper} from '../core/config/IPssimisticalConfigWrapper'
 
-import { MD_BUTTON_DIRECTIVES } from '@angular2-material/button';
-
-import {IPssimisticalFileInputFactory} from '../core/input/IPssimisticalFileInputFactory'
-import {IPssimisticalFileInput} from '../core/input/IPssimisticalFileInput'
-import {IPssimisticalLoader} from '../core/input/IPssimisticalLoader'
-import {IPssimisticalOutputFactory} from '../core/output/IPssimisticalOutputFactory'
-import {IPssimisticalOutput} from '../core/output/IPssimisticalOutput'
-import {PssimisticalCore} from '../core/PssimisticalCore'
-
-import {Subject} from 'rxjs/Subject';
-import {Observable} from 'rxjs/Observable';
 
 
 
@@ -26,26 +23,33 @@ import {Observable} from 'rxjs/Observable';
 
     template:
     `
-        Welcome to Pssmistical. 
-        
-        <pssimistical-config-selector  *ngIf="showConfigSelector()" (configSelected)="onConfigSelected($event)">
-        </pssimistical-config-selector> 
 
-        <pssimistical-input-selector  *ngIf="showInputSelector()" [config]="model.config" (configSelected)="onInputSelected($event)">
-        </pssimistical-input-selector> 
+        <md-toolbar color="primary">
+            Pssimistical
+            <button md-button color="secondary" *ngIf="!showConfigSelector()" (click)="clearConfig()">
+                Reset
+            </button>
+        </md-toolbar>
 
-        <div *ngIf="showReportRunner()">
-            <button md-raised-button (click)="nextButtonClicked()">RAISED</button>
-            <div>
-                Output:
-                {{output | async}}
-            </div>
-        </div>
+
+        <md-card>
+            <md-card-title>{{getTitle()}}</md-card-title>
+            <md-card-content>
+                    <pssimistical-config-selector  *ngIf="showConfigSelector()" (configSelected)="onConfigSelected($event)">
+                    </pssimistical-config-selector> 
+
+                    <pssimistical-input-selector  *ngIf="showInputSelector()" [config]="model.config" (configSelected)="onInputSelected($event)">
+                    </pssimistical-input-selector> 
+
+                    <pssimistical-report-runner  *ngIf="showReportRunner()" [model]="model">
+                    </pssimistical-report-runner> 
+            </md-card-content>
+    </md-card>
+
 
   `,
 
-    directives: [SelectConfigComponent, SelectInputsComponent],
-    encapsulation: ViewEncapsulation.None
+    directives: [SelectConfigComponent, SelectInputsComponent, PssimisticalReportRunnerComponent, MdToolbar, MD_CARD_DIRECTIVES, MdButton]
 })
 
 export class AppComponent {
@@ -54,16 +58,6 @@ export class AppComponent {
         config: undefined,
         inputs: undefined
     };
-
-
-    private outputSubject: Subject<string>;
-    private output: Observable<string>;
-
-
-    constructor() {
-        this.outputSubject = new Subject<string>();
-        this.output = this.outputSubject.asObservable();
-    }
 
     ngOnInit() {
 
@@ -107,83 +101,21 @@ export class AppComponent {
         window.sessionStorage.setItem('modelKey', JSON.stringify(this.model));
 
     }
-
-    nextButtonClicked() {
-        window.alert("Next");
-
-        //ok, as this point, we should have enough to run pssimistical's processing routine
-
-        //need to provide a PssimisticalFileInputFactory implementation
-
-        let fileInputFactory = new WebUIPssimisticalFileInputFactory(this.model);
-        let outputFactory = new WebUIPssimisticalOutputFactory(this.outputSubject);
-
-        let pssimisticalCore: PssimisticalCore = new PssimisticalCore(fileInputFactory, outputFactory);
-
-        pssimisticalCore.run(this.model.config);
-
+    
+    clearConfig() {
+        this.model = undefined;
+        window.sessionStorage.clear();
     }
 
-}
-
-class WebUIPssimisticalFileInputFactory implements IPssimisticalFileInputFactory {
-    constructor(private model: IPssimisticalWebUIModel) {
-
-    }
-
-    buildInput(input: IPssimisticalInput): IPssimisticalFileInput {
-        if (this.model.inputs[input.path]) {
-            return new WebUIPssimisticalFileInput(this.model.inputs[input.path]);
-        } else {
-            throw new Error("No file for input " + input.path);
+    getTitle(): string {
+        if (this.showConfigSelector()) {
+            return "Import a Pssimistical Configuration File"
+        } else if (this.showInputSelector()) {
+            return "Import data files for report"
+        } else if (this.showReportRunner()) {
+            return "Run report";
         }
-
-
     }
+
 }
 
-class WebUIPssimisticalFileInput implements IPssimisticalFileInput {
-    constructor(private fileContent: string) {
-
-    }
-
-    read(loader: IPssimisticalLoader): Promise<void> {
-
-        return new Promise<void>((resolve, reject) => {
-            //TODO: Must be possible to stream using file API, but for now, read the whole thing and split
-            let lines: string[] = this.fileContent.split("\n");
-            for (let line of lines) {
-                loader.onReadLine(line);
-            }
-
-            loader.onEOF();
-            resolve();
-        });
-    }
-}
-
-
-class WebUIPssimisticalOutputFactory implements IPssimisticalOutputFactory {
-
-    constructor(private subject: Subject<string>) {
-
-    }
-
-    buildOutput(config: IPssimisticalConfigWrapper): IPssimisticalOutput {
-        return new ObservablePssimisticalOutput(this.subject);
-    }
-}
-
-class ObservablePssimisticalOutput implements IPssimisticalOutput {
-
-    private buffer: string = "";
-
-    constructor(private subject: Subject<string>) {
-    }
-
-    writeLine(line: string) {
-        this.buffer += line + "\n";
-        this.subject.next(this.buffer);
-    }
-
-} 
