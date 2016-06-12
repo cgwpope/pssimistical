@@ -13,7 +13,6 @@
 
     },
     "exclude": [
-        "archive",
         "node_modules",
         "bin",
         "jspm_packages"
