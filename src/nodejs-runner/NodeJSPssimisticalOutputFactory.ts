@@ -16,11 +16,30 @@ export class NodeJSPssimisticalOutputFactory implements IPssimisticalOutputFacto
 }
 
 
-class NodeJSPssimisiticalFileOutput implements  IPssimisticalOutput {
+
+abstract class CSVOutput  implements  IPssimisticalOutput {
+    private _stringify;
+
+    constructor() {
+        this._stringify = require('csv-stringify');
+    }
+
+    writeRecord(record: [string, any]) {
+        this._stringify([record], (err, output) => {
+            this.writeLine(output);
+        })
+    }
+
+    abstract writeLine(line: string);
+}
+
+
+class NodeJSPssimisiticalFileOutput extends CSVOutput  {
     
     private _writeStream;
     
     constructor(filePath: string){
+        super();
         var fs = require("fs");
         this._writeStream = fs.createWriteStream(filePath); //default encodig option is utf-8. Perfect!
     }
@@ -30,7 +49,7 @@ class NodeJSPssimisiticalFileOutput implements  IPssimisticalOutput {
     }
 }
 
-class NodeJSPssimisiticalConsoleOutput implements  IPssimisticalOutput {
+class NodeJSPssimisiticalConsoleOutput extends CSVOutput  {
     writeLine(line: string) {
         console.log(line.trim());        
     }

@@ -2,6 +2,8 @@
 import { Component, ViewEncapsulation, Input, Output, EventEmitter } from '@angular/core';
 import {IPssimisticalConfigWrapper} from '../core/config/IPssimisticalConfigWrapper'
 import { MD_TABS_DIRECTIVES } from '@angular2-material/tabs';
+import {FileDropTargetComponent} from './file-drop-target.component'
+
 
 
 
@@ -15,9 +17,9 @@ import { MD_TABS_DIRECTIVES } from '@angular2-material/tabs';
         <md-tab *ngFor="let input of config.inputs">
             <template md-tab-label>{{input.path}}</template>
             <template md-tab-content>
-                <div id="drop_zone" (dragover)="handleDraggedOver($event)" (drop)="handleDrop($event, input.path)">
-                    Drop files here
-                </div>
+                <file-drop-target (fileDropped)="fileDropped($event, input.path)">
+                    <h3>Drop files to import here</h3>
+                </file-drop-target>
             </template>
         </md-tab>
     </md-tab-group>
@@ -25,7 +27,7 @@ import { MD_TABS_DIRECTIVES } from '@angular2-material/tabs';
 
     </div>
     `,
-    directives: [MD_TABS_DIRECTIVES],
+    directives: [MD_TABS_DIRECTIVES, FileDropTargetComponent],
     encapsulation: ViewEncapsulation.None,
 
 })
@@ -33,44 +35,14 @@ import { MD_TABS_DIRECTIVES } from '@angular2-material/tabs';
 
 export class SelectInputsComponent {
 
-
     @Input()  config: IPssimisticalConfigWrapper;
     @Output() configSelected = new EventEmitter<InputSelctedEvent>();
 
-
-    constructor() {
-    }
-
-    handleDraggedOver(event: DragEvent) {
-        event.stopPropagation();
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-    }
-
-    handleDrop(event: DragEvent, path: string) {
-        event.stopPropagation();
-        event.preventDefault();
-
-        let files: FileList = event.dataTransfer.files
-
-        if (files.length > 1) {
-            window.alert("Only drop a single file");
-        } else {
-
-            let fileReader: FileReader = new FileReader();
-            fileReader.onload = (event: Event) => {
-                let contents: string = event.target['result'];
-                this.configSelected.emit({
-                    path: path,
-                    content: contents
-                });
-
-            }
-
-            //TODO: Show progress as reading
-            fileReader.readAsText(files[0], 'utf8');
-            
-        }
+    fileDropped(event: string, path: string) {
+        this.configSelected.emit({
+            path: path,
+            content: event
+        });
     }
 }
 

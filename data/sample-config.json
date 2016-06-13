@@ -127,7 +127,6 @@
     ],
     "query": {
         "sql": "SELECT * from patients, patients",
-        "outputFormat": "CSV",
         "outputFile": "out.csv"
     }
 }

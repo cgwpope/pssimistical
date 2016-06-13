@@ -9,8 +9,7 @@ import {IPssimisticalFileInput} from './input/IPssimisticalFileInput'
 import {IPssimisticalLoader} from './input/IPssimisticalLoader'
 import {PssimisticalLoaderFactory} from './input/PssimisticalLoaderFactory'
 import {IPssimisticalOutputFactory} from './output/IPssimisticalOutputFactory'
-import {PssimisticalWriterFactory} from './output/PssimisticalWriterFactory'
-import {IPssimisticalWriter} from './output/IPssimisticalWriter'
+import {IPssimisticalOutput} from './output/IPssimisticalOutput'
 
 
 export class PssimisticalCore {
@@ -39,8 +38,8 @@ export class PssimisticalCore {
                 })).then(() => {
                     return dataStore.runQuery(configWrapper.getConfig().query.sql);
                 }).then((results: [string, any][]) => {
-                    let writerFactory: PssimisticalWriterFactory = new PssimisticalWriterFactory(this._fileOutputFactory);
-                    let writer: IPssimisticalWriter = writerFactory.buildWriter(configWrapper);
+                    
+                    let writer: IPssimisticalOutput = this._fileOutputFactory.buildOutput(configWrapper);
                     for (let result of results) {
                         writer.writeRecord(result);
                     }

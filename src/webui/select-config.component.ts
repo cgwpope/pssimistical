@@ -3,6 +3,7 @@ import {IPssimisticalConfig} from '../core/config/IPssimisticalConfig'
 import {PssimisticalConfigValidatorFactory} from '../core/config/PssimisticalConfigValidatorFactory'
 import {IPssimisticalConfigValidator} from '../core/config/IPssimisticalConfigValidator'
 import {IPssimisticalConfigWrapper} from '../core/config/IPssimisticalConfigWrapper'
+import {FileDropTargetComponent} from './file-drop-target.component'
 
 @Component({
     moduleId: module.id,
@@ -13,30 +14,13 @@ import {IPssimisticalConfigWrapper} from '../core/config/IPssimisticalConfigWrap
     
     <h3>Drag a Pssimistical configuration file onto the dropzone.</h3>
     
-    <div class="dropzone" (dragover)="handleDraggedOver($event)" (drop)="handleDrop($event)">
+    <file-drop-target (fileDropped)="fileDropped($event)">
         <h3>Drop configuration file here</h3>
-    </div>
+    </file-drop-target>
     
     </div>
     `,
-    styles: [
-        `
-        .dropzone {
-            text-align: center;
-            height: 200px;
-            border-color: black;
-            border-style: solid;
-            border-width: 2px;
-            transition: background-color 0.5s, ease-in;
-        }
-
-        .dropzone:hover {
-            background-color: cornflowerblue;
-        }
-
-
-`
-    ],
+    directives: [FileDropTargetComponent],
     encapsulation: ViewEncapsulation.Native
 })
 export class SelectConfigComponent {
@@ -47,39 +31,13 @@ export class SelectConfigComponent {
     constructor() {
     }
 
-    handleDraggedOver(event: DragEvent) {
-        event.stopPropagation();
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-    }
 
-    handleDrop(event: DragEvent) {
-        event.stopPropagation();
-        event.preventDefault();
-
-        let files:FileList = event.dataTransfer.files; // FileList object.
-
-        // files is a FileList of File objects. List some properties.
-        var output = [];
-        for (var i = 0, f: File; f = files[i]; i++) {
-
-            let fileReader: FileReader = new FileReader();
-            
-            fileReader.onload = (event: Event) => {
-                //read file, let's see if it's a pssimistical config
-                let config: IPssimisticalConfig = <IPssimisticalConfig>JSON.parse(event.target['result']);
-                
-                let configValidatorFactory: PssimisticalConfigValidatorFactory = new PssimisticalConfigValidatorFactory();
-                let configValidator: IPssimisticalConfigValidator = configValidatorFactory.buildConfigValidator();
-                configValidator.validateConfig(config)
-                .then( (config: IPssimisticalConfigWrapper) => this.configSelected.emit(config) )
-                .catch( (error) => console.log(error)); 
-                
-                //valid config. Add to the the list to run from
-            } 
-            
-            fileReader.readAsText(f, 'utf8');
-
-        }
+    fileDropped(event: string) {
+        let config: IPssimisticalConfig = <IPssimisticalConfig>JSON.parse(event);
+        let configValidatorFactory: PssimisticalConfigValidatorFactory = new PssimisticalConfigValidatorFactory();
+        let configValidator: IPssimisticalConfigValidator = configValidatorFactory.buildConfigValidator();
+        configValidator.validateConfig(config)
+        .then( (config: IPssimisticalConfigWrapper) => this.configSelected.emit(config) )
+        .catch( (error) => console.log(error)); 
     }
 }

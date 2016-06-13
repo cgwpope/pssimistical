@@ -26,12 +26,18 @@ import {Observable} from 'rxjs/Observable';
 
 @Component({
     selector: 'pssimistical-report-runner',
-    template: 
+    template:
     `
-        <button md-raised-button (click)="nextButtonClicked()">RAISED</button>
+        <button md-raised-button (click)="nextButtonClicked()">Run Report</button>
         <div>
-            Output:
-            {{output | async}}
+            <table>
+                <tr>
+                    <th *ngFor="let header of headers | async">{{header}}<th>
+                </tr>
+                <tr *ngFor="let row of rows | async">
+                    <td *ngFor="let key of keys(row)">{{row[key]}}</td>
+                </tr> 
+            </table>
         </div>
     `,
 
@@ -39,15 +45,21 @@ import {Observable} from 'rxjs/Observable';
 
 export class PssimisticalReportRunnerComponent {
 
-    private outputSubject: Subject<string>;
-    private output: Observable<string>;
-    
+    private headersSubject: Subject<string[]>;
+    private headers: Observable<string[]>;
+
+    private rowsSubject: Subject<[string, any][]>;
+    private rows: Observable<[string, any][]>;
+
     @Input()
     private model: IPssimisticalWebUIModel;
 
     constructor() {
-        this.outputSubject = new Subject<string>();
-        this.output = this.outputSubject.asObservable();
+        this.headersSubject = new Subject<string[]>();
+        this.headers = this.headersSubject.asObservable();
+
+        this.rowsSubject = new Subject<[string, any][]>();
+        this.rows = this.rowsSubject.asObservable();
     }
 
     nextButtonClicked() {
@@ -58,12 +70,20 @@ export class PssimisticalReportRunnerComponent {
         //need to provide a PssimisticalFileInputFactory implementation
 
         let fileInputFactory = new WebUIPssimisticalFileInputFactory(this.model);
-        let outputFactory = new WebUIPssimisticalOutputFactory(this.outputSubject);
+        let outputFactory = new WebUIPssimisticalOutputFactory(this.headersSubject, this.rowsSubject);
 
         let pssimisticalCore: PssimisticalCore = new PssimisticalCore(fileInputFactory, outputFactory);
 
         pssimisticalCore.run(this.model.config);
 
+    }
+
+    keys(obj: any){
+        if(obj){
+            return Object.keys(obj);
+        } else {
+            return [];
+        }
     }
 
 }
@@ -106,27 +126,41 @@ class WebUIPssimisticalFileInput implements IPssimisticalFileInput {
 }
 
 
+
+
 class WebUIPssimisticalOutputFactory implements IPssimisticalOutputFactory {
 
-    constructor(private subject: Subject<string>) {
+    constructor(private headersSubject: Subject<string[]>, private rowsSubject: Subject<[string, any][]>) {
 
     }
 
     buildOutput(config: IPssimisticalConfigWrapper): IPssimisticalOutput {
-        return new ObservablePssimisticalOutput(this.subject);
+        return new ObservablePssimisticalOutput(this.headersSubject, this.rowsSubject);
     }
 }
 
 class ObservablePssimisticalOutput implements IPssimisticalOutput {
 
-    private buffer: string = "";
+    private hasHeaders: boolean = false;
 
-    constructor(private subject: Subject<string>) {
+    //TODO: Research better way to push new items to an observable list    
+    private rowsBuffer: [string, any][]= [];
+
+    constructor(private columns: Subject<string[]>, private rows: Subject<[string, any][]>) {
     }
 
-    writeLine(line: string) {
-        this.buffer += line + "\n";
-        this.subject.next(this.buffer);
-    }
+    writeRecord(record: [string, any]) {
+        if (!this.hasHeaders) {
+            let headers: string[] = [];
+            for (let key in record) {
+                headers.push(key);
+            }
 
+            this.columns.next(headers);
+            this.hasHeaders = true;
+        }
+
+        this.rowsBuffer.push(record);
+        this.rows.next(this.rowsBuffer);
+    }
 } 

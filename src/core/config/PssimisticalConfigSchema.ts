@@ -110,13 +110,11 @@ export default `
         "query": {
             "type": "object",
             "required": [
-                "sql",
-                "outputFormat"
+                "sql"            
             ],
             "properties": {
                 "sql": {"type": "string"},
-                "outputFile": {"type": "string"},
-                "outputFormat": {"type": "string"}
+                "outputFile": {"type": "string"}
             }
         }
     }
